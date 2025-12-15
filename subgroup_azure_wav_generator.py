@@ -3,44 +3,44 @@ import os
 import time
 from typing import Dict, Tuple, List
 
-# Azure Speech 설정 - load from environment variables
-# 1. Azure Portal에서 Speech Service 리소스 생성
-# 2. .env 파일에 Key와 Region 설정
+# Azure Speech Configuration - load from environment variables
+# 1. Create a Speech Service resource in Azure Portal
+# 2. Set Key and Region in .env file
 SPEECH_KEY = os.environ.get("AZURE_SPEECH_KEY", "")
 SPEECH_REGION = os.environ.get("AZURE_SPEECH_REGION", "eastus")
 
-# 디렉토리 생성
+# Create output directory
 os.makedirs("sample-conv-wav-files", exist_ok=True)
 
-# Azure의 노인/성숙한 음성 옵션들
+# Azure elderly/mature voice options
 ELDERLY_VOICES = {
     "rachel_female": {
-        "voice": "en-US-AriaNeural",  # 성숙한 여성 음성
-        "style": "customerservice",  # 차분한 스타일
-        "pitch": "-15Hz",  # 낮은 피치
-        "rate": "-5%"  # 느린 속도
+        "voice": "en-US-AriaNeural",  # Mature female voice
+        "style": "customerservice",  # Calm style
+        "pitch": "-15Hz",  # Lower pitch
+        "rate": "-5%"  # Slower speed
     },
     "jolene_female": {
-        "voice": "en-US-JennyNeural",  # 자연스러운 여성 음성
-        "style": "sad",  # 우울한 스타일 (monotone에 가까움)
+        "voice": "en-US-JennyNeural",  # Natural female voice
+        "style": "sad",  # Depressed style (close to monotone)
         "pitch": "-20Hz",
         "rate": "-15%"
     },
     "ralph_male": {
-        "voice": "en-US-GuyNeural",  # 성숙한 남성 음성
-        "style": "newscast",  # 명확한 발음
-        "pitch": "-25Hz",  # 더 낮은 피치 (남성)
+        "voice": "en-US-GuyNeural",  # Mature male voice
+        "style": "newscast",  # Clear pronunciation
+        "pitch": "-25Hz",  # Lower pitch (male)
         "rate": "-5%"
     },
     "caregiver": {
-        "voice": "en-US-JennyNeural",  # 친근한 여성 음성
+        "voice": "en-US-JennyNeural",  # Friendly female voice
         "style": "friendly",
-        "pitch": "0Hz",  # 정상 피치
+        "pitch": "0Hz",  # Normal pitch
         "rate": "0%"
     }
 }
 
-# 전체 대화 데이터 (3, 5, 7턴 모두 포함)
+# Complete conversation data (includes 3, 5, 7 turns)
 conversations = {
     "rachel_severe": {
         "3-turn": [
@@ -115,13 +115,13 @@ conversations = {
     }
 }
 
-# SSML을 사용한 고급 음성 조절
+# Advanced voice control using SSML
 def create_ssml_with_elderly_effects(text: str, persona: str, emotion: str) -> str:
-    """SSML로 노인 음성 효과 생성"""
-    
+    """Generate elderly voice effects using SSML"""
+
     voice_config = ELDERLY_VOICES.get(persona, ELDERLY_VOICES["caregiver"])
-    
-    # 감정별 추가 조정
+
+    # Emotion-specific adjustments
     emotion_adjustments = {
         # Rachel emotions
         "fear": {"pitch": "+5Hz", "rate": "+10%", "volume": "+10%"},
@@ -177,8 +177,8 @@ def create_ssml_with_elderly_effects(text: str, persona: str, emotion: str) -> s
     }
     
     emo_adj = emotion_adjustments.get(emotion, {})
-    
-    # SSML 템플릿
+
+    # SSML template
     ssml = f"""<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" 
                 xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="en-US">
         <voice name="{voice_config['voice']}">
@@ -196,11 +196,11 @@ def create_ssml_with_elderly_effects(text: str, persona: str, emotion: str) -> s
     return ssml
 
 def add_elderly_speech_patterns(text: str, persona: str, emotion: str) -> str:
-    """노인 특유의 말하기 패턴 추가"""
-    
-    # Rachel (severe dementia) - 더듬거림, 중단
+    """Add elderly-specific speech patterns"""
+
+    # Rachel (severe dementia) - stuttering, interruptions
     if "rachel" in persona and emotion in ["fear", "confused", "panic", "anxious", "frustrated"]:
-        # 단어 사이에 휴지 추가
+        # Add pauses between words
         words = text.split()
         result = []
         for i, word in enumerate(words):
@@ -210,18 +210,18 @@ def add_elderly_speech_patterns(text: str, persona: str, emotion: str) -> str:
             elif emotion in ["panic", "extreme_distress"] and i % 3 == 0:
                 result.append('<break time="200ms"/>')
         return " ".join(result)
-    
-    # Jolene (depressed) - 긴 휴지, 한숨
+
+    # Jolene (depressed) - long pauses, sighs
     elif "jolene" in persona:
-        # 문장 중간에 긴 휴지
+        # Add long pauses mid-sentence
         text = text.replace(".", '.<break time="1s"/>')
         text = text.replace(",", ',<break time="500ms"/>')
         if emotion in ["depressed", "empty", "hopeless"]:
-            # 시작 전 한숨 효과
+            # Sigh effect before speaking
             text = '<break time="500ms"/>' + text
         return text
-    
-    # Ralph (confused but trying) - 중간에 "uh" 추가
+
+    # Ralph (confused but trying) - add "uh" interjections
     elif "ralph" in persona and emotion in ["confused_but_trying", "uncertain", "confused_excited"]:
         text = text.replace("I need to...", 'I need to<break time="300ms"/>uh<break time="300ms"/>')
         text = text.replace("was it...", 'was it<break time="300ms"/>uh<break time="200ms"/>')
@@ -231,26 +231,26 @@ def add_elderly_speech_patterns(text: str, persona: str, emotion: str) -> str:
     return text
 
 def generate_azure_voice(text: str, speaker: str, emotion: str, filename: str):
-    """Azure Speech로 음성 생성"""
-    
-    # Speech config 설정
+    """Generate voice using Azure Speech"""
+
+    # Speech config setup
     speech_config = speechsdk.SpeechConfig(
-        subscription=SPEECH_KEY, 
+        subscription=SPEECH_KEY,
         region=SPEECH_REGION
     )
-    
-    # 오디오 출력 설정
+
+    # Audio output configuration
     audio_config = speechsdk.audio.AudioOutputConfig(
         filename=f"sample-conv-wav-files/{filename}.wav"
     )
-    
-    # Synthesizer 생성
+
+    # Create synthesizer
     synthesizer = speechsdk.SpeechSynthesizer(
-        speech_config=speech_config, 
+        speech_config=speech_config,
         audio_config=audio_config
     )
-    
-    # Persona 매핑
+
+    # Persona mapping
     if speaker == "Rachel":
         persona = "rachel_female"
     elif speaker == "Jolene":
@@ -259,11 +259,11 @@ def generate_azure_voice(text: str, speaker: str, emotion: str, filename: str):
         persona = "ralph_male"
     else:  # Caregiver
         persona = "caregiver"
-    
-    # SSML 생성
+
+    # Generate SSML
     ssml = create_ssml_with_elderly_effects(text, persona, emotion)
-    
-    # 음성 합성
+
+    # Synthesize speech
     result = synthesizer.speak_ssml_async(ssml).get()
     
     if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
@@ -274,12 +274,12 @@ def generate_azure_voice(text: str, speaker: str, emotion: str, filename: str):
             print(f"   Details: {result.cancellation_details.reason}")
             print(f"   Error details: {result.cancellation_details.error_details}")
 
-# 메인 실행
+# Main execution
 if __name__ == "__main__":
     print("🎤 Azure Speech Services - Complete Elderly Voice Generation")
     print("=" * 60)
-    
-    # API 키 확인
+
+    # Check API key
     if SPEECH_KEY == "YOUR_AZURE_SPEECH_KEY":
         print("❌ Please set your Azure Speech API key first!")
         print("\n📝 How to get Azure Speech API key:")
@@ -288,8 +288,8 @@ if __name__ == "__main__":
         print("3. Copy the key and region")
         print("4. Update SPEECH_KEY and SPEECH_REGION in this script")
         exit(1)
-    
-    # 전체 음성 생성
+
+    # Generate all voice files
     total_files = 0
     for persona_name, persona_conversations in conversations.items():
         print(f"\n{'='*60}")
@@ -305,7 +305,7 @@ if __name__ == "__main__":
                 print(f"  Turn {i}: ", end="")
                 generate_azure_voice(text, speaker, emotion, filename)
                 total_files += 1
-                time.sleep(0.5)  # API rate limiting 방지
+                time.sleep(0.5)  # Prevent API rate limiting
     
     print("\n" + "=" * 60)
     print(f"✅ All {total_files} audio files created successfully!")
