@@ -2,7 +2,11 @@
 
 An intelligent audio processing pipeline that detects emotions from speech and generates empathetic therapeutic responses for dementia patients. This system combines real-time emotion recognition with clinically-informed response generation.
 
-![App Demo](screenshots/demo.png)
+## Demo
+
+https://github.com/philhelenina/emotion-aware-dementia-ai/assets/demo-clip.mp4
+
+[▶️ Watch Demo Video](demo-clip.mp4)
 
 ## Key Features
 
