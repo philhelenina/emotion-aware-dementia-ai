@@ -11,7 +11,7 @@ An intelligent audio processing pipeline that detects emotions from speech and g
 - **🎤 Speech-to-Text**: Powered by OpenAI Whisper for accurate transcription
 - **🎭 Emotion Detection**: Real-time emotion analysis from audio using pretrained models
 - **🤖 Intelligent Responses**: Context-aware responses using OpenAI GPT-3.5 or smart fallbacks
-- **🔊 Text-to-Speech**: Natural voice responses using Google TTS
+- **🔊 Text-to-Speech**: Natural elderly voice synthesis using Azure Cognitive Services
 - **⚙️ Flexible Configuration**: Multiple response styles and manual emotion override
 - **🐛 Debug Mode**: Detailed processing insights for development
 
@@ -68,21 +68,7 @@ Core libraries automatically installed:
 - Transformers (Emotion detection)
 - PyTorch (Neural network backend)
 - Librosa (Audio processing)
-- Google TTS (Text-to-speech)
-
-## 🔧 Configuration
-
-### OpenAI API Setup (Recommended)
-
-1. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Enter the key in the app's sidebar
-3. **Cost**: ~$0.002 per request (very affordable!)
-
-See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed instructions.
-
-### Without OpenAI (Free Mode)
-
-The app includes intelligent fallback responses that work without any API keys!
+- Azure Cognitive Services (Text-to-speech)
 
 ## 📖 How to Use
 
@@ -130,7 +116,7 @@ Audio Input → Whisper STT → Emotion Detection → LLM Processing → TTS Out
 1. **OpenAI Whisper** (base model) - Speech-to-text transcription
 2. **wav2vec2-lg-xlsr-en-speech-emotion-recognition** - Emotion detection
 3. **OpenAI GPT-3.5-turbo** - Response generation (with fallback)
-4. **Google TTS** - Text-to-speech synthesis
+4. **Azure Cognitive Services** - Text-to-speech synthesis with elderly voice modeling
 
 ## 🔍 Advanced Features
 
@@ -185,7 +171,7 @@ audio_emotion_classifier = pipeline(
 **"OpenAI API Error"**
 - Verify API key format
 - Check billing setup
-- See [SETUP_GUIDE.md](SETUP_GUIDE.md)
+- See `.env.example` for configuration
 
 **"Transcription failed"**
 - Try shorter audio clips (< 30 seconds)
@@ -261,7 +247,7 @@ This work is part of the UCI Noyce Project, supported by the Noyce Award (Octobe
 
 - **OpenAI** - Whisper and GPT models
 - **Hugging Face** - Emotion detection models
-- **Google** - Text-to-speech service
+- **Microsoft Azure** - Cognitive Services for speech synthesis
 - **Streamlit** - Web application framework
 
 ---
