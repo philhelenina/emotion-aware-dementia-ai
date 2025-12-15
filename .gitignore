@@ -1,0 +1,54 @@
+# Environment variables and secrets
+.env
+secrets.toml
+.streamlit/secrets.toml
+hf_token.txt
+
+# API keys and credentials
+**/credentials*
+**/secrets*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+ENV/
+
+# Audio files (generated)
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Test outputs
+test_output*
+*_output*
