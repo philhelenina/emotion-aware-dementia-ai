@@ -4,7 +4,7 @@ An intelligent audio processing pipeline that detects emotions from speech and g
 
 ## Demo
 
-[▶️ Watch Demo Video](https://github.com/philhelenina/emotion-aware-dementia-ai/blob/main/demo-clip.mp4)
+![Live Demo](demo.gif)
 
 ## Key Features
 
